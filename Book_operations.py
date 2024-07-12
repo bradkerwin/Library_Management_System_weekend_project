@@ -1,3 +1,10 @@
+class Book():
+    def __init__(self, title, author, genre, publication_date):
+        self.title = title
+        self.author = author
+        self.genre = genre
+        self.publication_date = publication_date
+        self.status = "Available"
 
 class Book_operations():
     def __init__(self):
@@ -9,16 +16,16 @@ class Book_operations():
         self.author = author
         self.genre = genre
         self.publication_date = publication_date
-        new_book_info = {"Title": self.title, "Author": self.author, "Genre": self.genre, "Publication date": self.publication_date, "Status": "Available"}
+        new_book_info = Book(title, author, genre, publication_date)
         self.books.append(new_book_info)
 
     def borrow_book(self):
         while True:
             book_select = input("What book would you like to borrow?: ").title()
             for book in self.books:
-                if book_select == book["Title"] and book["Status"] == "Available":
+                if book_select == book.title and book.status == "Available":
                     print(f"You may borrow {book_select}. Thank you.")
-                    book["Status"] = "Not available"
+                    book.status = "Not available"
                     self.books.remove(book)
                     self.borrowed_books.append(book)
                     return                
@@ -29,15 +36,15 @@ class Book_operations():
         while True:
             book_return = input("What book are you returning? ").title()
             for book in self.books:
-                if book_return == book["Title"] and book["Status"] == "Available":
+                if book_return == book.title and book.status == "Available":
                         print("Looks like that book is still here.")
                         return
             for book in self.borrowed_books:
-                if book_return == book["Title"] and book["Status"] == "Not available":
+                if book_return == book.title and book.status == "Not available":
                     print(f"Thank you for returning {book_return}. Have a great day.")
                     self.borrowed_books.remove(book)
                     self.books.append(book)
-                    book["Status"] = "Available"
+                    book.status = "Available"
                     return
             print("There's no record of that book on file.")
             break
@@ -46,15 +53,25 @@ class Book_operations():
         while True:
             book_search = input("What book are you looking for? ").title()
             for book in self.borrowed_books:
-                if book_search in book.values():
+                if book_search == book.title:
                     print("Looks like that book is being borrowed at the moment.")
                     return
             for book in self.books:
-                if book_search in book.values():
-                    print(book)
+                if book_search == book.title:
+                    print(f"{book.title} by {book.author} is {book.status}")
                     return
             print("Book not found. Please try again later.")
             break
+
+    def display_books(self):
+        for book in self.books:
+            print('='*30)
+            print(f"Title: {book.title}, Author: {book.author}, Genre: {book.genre}, Publication Date: {book.publication_date}, Availability: {book.status.upper()}")
+            print('='*30)
+        for book in self.borrowed_books:
+            print(f"Title: {book.title}, Author: {book.author}, Genre: {book.genre}, Publication Date: {book.publication_date}, Availability: {book.status.upper()}")
+            print('='*30)
+
 
     def get_books_menu(self):
         while True:
@@ -80,8 +97,7 @@ Book Operations:
             elif select == '4':
                 self.search_book()
             elif select == '5':
-                print("Available books: ", self.books)
-                print("Books currently being borrowed: ", self.borrowed_books)
+                self.display_books()
             elif select == '6':
                 break
             else:
